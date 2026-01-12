@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: minicraftpod
+spec:
+
+  hostAliases:
+
+    - ip: "127.0.0.1"
+      hostnames:
+        - "auth"
+        - "stats"
+        - "app"
+
+  containers:
+
+    - name: auth
+      image: auth:latest
+      ports:
+        - hostIP: 10.11.11.11
+          hostPort: 8080
+          containerPort: 8080
+          protocol: TCP
+        - hostIP: 10.11.11.11
+          hostPort: 8443
+          containerPort: 8443
+      env:
+        - name: FQDN
+          value: "${FQDN}"
+      volumeMounts:
+        - name: auth
+          mountPath: /auth
+        - name: secretsvolume
+          mountPath: /secrets
+          readOnly: true
+
+    - name: stats
+      image: stats:latest
+      env:
+        - name: PODMAN_HOST
+          value: unix:///podman.sock
+      volumeMounts:
+        - name: share
+          mountPath: /share
+        - name: podsock
+          mountPath: /podman.sock
+
+    - name: app
+      image: app:latest
+      ports:
+        - hostIP: 10.11.11.11
+          hostPort: 25565
+          containerPort: 25565
+          protocol: TCP
+        - hostIP: 10.11.11.11
+          hostPort: 24454
+          containerPort: 24454
+          protocol: UDP
+      volumeMounts:
+        - name: share
+          mountPath: /share
+
+  volumes:
+
+    - name: auth
+      hostPath:
+        path: /home/podadmin/serv/auth
+        type: DirectoryOrCreate
+
+    - name: share
+      hostPath:
+        path: /home/podadmin/serv/share
+        type: DirectoryOrCreate
+
+    - name: podsock
+      hostPath:
+        path: /run/user/11111/podman/podman.sock
+        type: Socket
+
+    - name: secretsvolume
+      secret:
+        secretName: authsecrets

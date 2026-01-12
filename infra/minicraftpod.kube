@@ -1,0 +1,18 @@
+[Unit]
+Description=Minicraft Pod
+After=podman.socket
+#want but cant use system level network-online.target
+#let podman auto-insert its fix
+#https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html#implicit-network-dependencies
+
+
+[Kube]
+Yaml=pod.yml
+Network=pasta
+
+[Service]
+Restart=on-failure
+TimeoutStartSec=600
+
+[Install]
+WantedBy=default.target
