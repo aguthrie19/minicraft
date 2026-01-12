@@ -34,3 +34,17 @@ Infrastructure setup for minicraft Podman deployment.
     ├── backup.sh               # Backup world data, configs, or persistent volumes
     ├── logs.sh                 # Tail or collect logs from running containers
     └── update.sh               # Rebuild images, pull updates, and restart the pod cleanly
+
+Variable Handling (setup + configs)
+setup.sh → exports vars
+pod.yml → injects into containers
+Dockerfile/.conf/.cfg/.php/Caddyfile → read vars
+
+Processes (what they provide)
+[auth: Caddy+SSO] → HTTP routing
+[stats: PHP-FPM] → stats/files
+[app: server]    → game TCP/UDP
+
+Networking Routes (minecraft + web)
+Browser → HTTPS → [auth] → [stats/app HTTP]
+Minecraft → UDP/TCP → [app] (bypasses SSO)
