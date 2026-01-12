@@ -36,6 +36,7 @@ minicraft/
     ├── logs.sh                 # Tail or collect logs from running containers
     └── update.sh               # Rebuild images, pull updates, and restart the pod cleanly
 ```
+```
 Variable Handling (setup + configs)
 setup.sh -> exports vars
 pod.yml -> injects into containers
@@ -49,4 +50,4 @@ Processes (what they provide)
 Networking Routes (minecraft + web)
 Browser -> HTTPS -> [auth] -> [stats/app HTTP]
 Minecraft -> UDP/TCP -> [app] (bypasses SSO)
-
+```
