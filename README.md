@@ -1,10 +1,11 @@
 Infrastructure setup for minicraft Podman deployment.
-📦 minicraft
+```
+minicraft/
 ├── .gitignore                  # Ignores local artifacts, secrets, build outputs, and temp files
+├── README.md                   # overview: repo structure, etc
 │
 ├── infra/                      # Host-level setup for networking, firewall, and pod deployment
 │   ├── LICENSE                 # Project license (AGPL-3.0) stored alongside infra assets
-│   ├── README.md               # Infra overview: explains pod layout, networking, and repo structure
 │   ├── nftables.conf           # Firewall rules for TCP/UDP exposure and rate-limiting
 │   ├── pod.yml                 # Podman pod definition (containers, ports, volumes)
 │   ├── minicraftpod.kube       # Kubernetes-format spec used by podman play kube
@@ -34,17 +35,18 @@ Infrastructure setup for minicraft Podman deployment.
     ├── backup.sh               # Backup world data, configs, or persistent volumes
     ├── logs.sh                 # Tail or collect logs from running containers
     └── update.sh               # Rebuild images, pull updates, and restart the pod cleanly
-
+```
 Variable Handling (setup + configs)
-setup.sh → exports vars
-pod.yml → injects into containers
-Dockerfile/.conf/.cfg/.php/Caddyfile → read vars
+setup.sh -> exports vars
+pod.yml -> injects into containers
+Dockerfile/.conf/.cfg/.php/Caddyfile -> read vars
 
 Processes (what they provide)
-[auth: Caddy+SSO] → HTTP routing
-[stats: PHP-FPM] → stats/files
-[app: server]    → game TCP/UDP
+[auth: Caddy+SSO] -> HTTP routing
+[stats: PHP-FPM] -> stats/files
+[app: server]    -> game TCP/UDP
 
 Networking Routes (minecraft + web)
-Browser → HTTPS → [auth] → [stats/app HTTP]
-Minecraft → UDP/TCP → [app] (bypasses SSO)
+Browser -> HTTPS -> [auth] -> [stats/app HTTP]
+Minecraft -> UDP/TCP -> [app] (bypasses SSO)
+
