@@ -1,0 +1,30 @@
+#!/usr/sbin/nft -f
+
+table inet nat {
+  chain prerouting {
+    type nat hook prerouting priority dstnat; policy accept;
+
+    # Dashboard
+    # HTTP → auth:8080
+    # HTTPS → auth:8443
+    tcp dport 80 dnat ip to 10.11.11.11:8080
+    tcp dport 443 dnat ip to 10.11.11.11:8443
+
+    # Minecraft
+    # TCP → app:25565
+    # UDP → app:24454
+    tcp dport 25565 dnat ip to 10.11.11.11:25565 
+    udp dport 24454 dnat ip to 10.11.11.11:24454
+  }
+}
+
+table inet filter {
+  chain pod_input {
+    # all HTTP/HTTPS + Minecraft TCP
+    tcp dport { 8080, 8443, 25565 } accept
+
+    # limit UDP traffic
+    udp dport 24454 limit rate 50/second burst 200 packets accept
+    udp dport 24454 drop
+  }
+}

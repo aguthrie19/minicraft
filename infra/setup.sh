@@ -3,12 +3,15 @@
 # -----------------
 # --- VARIABLES ---
 # -----------------
-REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PUBLIC_IP=$(curl -s https://ifconfig.me)
-FQDN=$(getent hosts "$PUBLIC_IP" | awk '{print $2}')
-export FQDN
+REPO=$(dirname $(realpath "${BASH_SOURCE[0]}"))
+IP_EXT=$(wget -qO- https://www.icanhazip.com)
+FQDN=$(getent -s dns hosts $IP_EXT | awk '{print $2}')
 SECRETS_FILE="${REPO}/secrets.env"
 USER="podadmin"
+
+source "$REPO"/ops/get_helpers.sh
+
+export FQDN
 
 # ---------------
 # --- INSTALL ---
@@ -25,10 +28,15 @@ cp "${REPO}/infra/25-dumpodintf.network" /etc/systemd/network/25-dumpodintf.netw
 chmod 644 /etc/systemd/network/25-dumpodintf.*
 # enable the root daemon 
 systemctl enable --now systemd-networkd
+networkctl reload
+networkctl reconfigure 25-dumpodintf
 
 # --- apply root firewall with nftables ---
-cp "${REPO}/infra/nftables.conf" /etc/nftables.conf
+mkdir -p /etc/nftables.d/
+cp "${REPO}/infra/pod.nft" /etc/nftables.d/pod.nft
+nftcfg_add2chain /etc/nftables.conf /etc/nftables.d/pod.nft pod_input “inet filter input”
 systemctl enable --now nftables
+systemctl restart nftables
 
 # --- create user + subuids/subgids for podman ---
 useradd -m -u 11111 -s /bin/bash "${USER}"
