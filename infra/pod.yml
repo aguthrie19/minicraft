@@ -80,3 +80,8 @@ spec:
     - name: secretsvolume
       secret:
         secretName: authsecrets
+        items:
+        - key: manual_client_id
+          path: manual_client_id
+        - key: manual_client_secret
+          path: manual_client_secret

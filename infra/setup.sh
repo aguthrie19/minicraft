@@ -6,7 +6,7 @@
 REPO=$(dirname $(realpath "${BASH_SOURCE[0]}"))
 IP_EXT=$(wget -qO- https://www.icanhazip.com)
 FQDN=$(getent -s dns hosts $IP_EXT | awk '{print $2}')
-SECRETS_FILE="${REPO}/secrets.env"
+SECRETS_FILE="${REPO}/infra/secrets.yml"
 USER="podadmin"
 
 source "$REPO"/ops/get_helpers.sh
@@ -62,7 +62,7 @@ sudo -iu "${USER}" bash -lc "
 
 # --- create secret + move quadlet service file + make pod yaml discoverable by quadlet service ---
 sudo -iu "${USER}" bash -lc "
-  podman secret create authsecrets '${SECRETS_FILE}'
+  podman kube play '${SECRETS_FILE}'
   mkdir -p ~/.config/containers/systemd
   cp '${REPO}/infra/minicraftpod.kube' ~/.config/containers/systemd/minicraftpod.kube
   cp '${REPO}/infra/pod.yml' ~/.config/containers/systemd/pod.yml
