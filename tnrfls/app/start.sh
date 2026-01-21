@@ -8,8 +8,8 @@ mkdir -p "${WORLD_DIR}"
 
 cd "${WORLD_DIR}"
 
-if [ -f /share/server.jar ]; then
-  exec java -Xms1G -Xmx2G -jar /share/server.jar nogui
+if [ -f /app/server.jar ]; then
+  exec java -Xms1G -Xmx2G -jar /app/server.jar nogui
 else
   echo "Minecraft server.jar not found in /share; sleeping."
   tail -f /dev/null
