@@ -11,13 +11,11 @@ USER="podadmin"
 
 source "$REPO"/ops/get_helpers.sh
 
-export FQDN
-
 # --------------
 # --- ACCESS ---
 # --------------
 
-chown -R root:"$USER" "$REPO"
+chown -R root:root "$REPO"
 chmod -R 770 "$REPO"
 
 # ---------------
@@ -33,7 +31,7 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y nftables passt podman
 cp "${REPO}/infra/25-dumpodintf.netdev" /etc/systemd/network/25-dumpodintf.netdev
 cp "${REPO}/infra/25-dumpodintf.network" /etc/systemd/network/25-dumpodintf.network
 chmod 644 /etc/systemd/network/25-dumpodintf.*
-# enable the root daemon 
+# enable the root daemon
 systemctl enable --now systemd-networkd
 networkctl reload
 networkctl reconfigure dumpodintf
@@ -48,6 +46,7 @@ systemctl enable --now nftables
 useradd -m -u 11111 -s /bin/bash "${USER}"
 usermod --add-subuids 100000-165535 "${USER}"
 usermod --add-subgids 100000-165535 "${USER}"
+chown -R root:"$USER" "$REPO"
 
 # --- manage secrets ---
 groupadd get-secrets
@@ -67,11 +66,12 @@ sudo -iu "${USER}" bash -lc "
 "
 
 # --- create secret + move quadlet service file + make pod yaml discoverable by quadlet service ---
+echo "Debug: FQDN is set to [$FQDN]"
 sudo -iu "${USER}" bash -lc "
   podman kube play '${SECRETS_FILE}' && \
   mkdir -p ~/.config/containers/systemd && \
   cp '${REPO}/infra/minicraftpod.kube' ~/.config/containers/systemd/minicraftpod.kube && \
-  < "${REPO}/infra/pod.yml" envsubst > ~/.config/containers/systemd/pod.yml
+  FQDN='${FQDN}' < '${REPO}/infra/pod.yml' envsubst > ~/.config/containers/systemd/pod.yml
 "
 # cp '${REPO}/infra/pod.yml' ~/.config/containers/systemd/pod.yml
 

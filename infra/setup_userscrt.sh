@@ -17,6 +17,7 @@ export FQDN
 useradd -m -u 11111 -s /bin/bash "${USER}"
 usermod --add-subuids 100000-165535 "${USER}"
 usermod --add-subgids 100000-165535 "${USER}"
+chown -R root:"$USER" "$REPO"
 
 # --- manage secrets ---
 groupadd get-secrets
