@@ -3,7 +3,7 @@
 # -----------------
 # --- VARIABLES ---
 # -----------------
-REPO=$(dirname $(realpath "${BASH_SOURCE[0]}"))
+REPO=$(dirname $(dirname $(realpath "${BASH_SOURCE[0]}")))
 IP_EXT=$(wget -qO- https://www.icanhazip.com)
 FQDN=$(getent -s dns hosts $IP_EXT | awk '{print $2}')
 SECRETS_FILE="${REPO}/infra/secrets.yml"
@@ -12,6 +12,13 @@ USER="podadmin"
 source "$REPO"/ops/get_helpers.sh
 
 export FQDN
+
+# --------------
+# --- ACCESS ---
+# --------------
+
+chown -R root:"$USER" "$REPO"
+chmod -R 770 "$REPO"
 
 # ---------------
 # --- INSTALL ---
@@ -29,14 +36,13 @@ chmod 644 /etc/systemd/network/25-dumpodintf.*
 # enable the root daemon 
 systemctl enable --now systemd-networkd
 networkctl reload
-networkctl reconfigure 25-dumpodintf
+networkctl reconfigure dumpodintf
 
 # --- apply root firewall with nftables ---
 mkdir -p /etc/nftables.d/
 cp "${REPO}/infra/pod.nft" /etc/nftables.d/pod.nft
-nftcfg_add2chain /etc/nftables.conf /etc/nftables.d/pod.nft pod_input “inet filter input”
+nftcfg_add2chain /etc/nftables.conf /etc/nftables.d/pod.nft pod_input "inet filter input"
 systemctl enable --now nftables
-systemctl restart nftables
 
 # --- create user + subuids/subgids for podman ---
 useradd -m -u 11111 -s /bin/bash "${USER}"
@@ -51,25 +57,26 @@ chmod 640 "${SECRETS_FILE}"
 
 # --- persistent systemd user session & podman api ---
 loginctl enable-linger "${USER}"
-sudo -iu "${USER}" bash -lc 'systemctl --user enable --now podman.socket'
+sudo -iu "${USER}" env XDG_RUNTIME_DIR=/run/user/11111 bash -lc 'systemctl --user enable --now podman.socket'
 
 # --- build images ---
 sudo -iu "${USER}" bash -lc "
-  podman build -t auth:latest '${REPO}/tnrs/auth'
-  podman build -t stats:latest '${REPO}/tnrs/stats'
-  podman build -t app:latest '${REPO}/tnrs/app'
+  podman build -t auth:latest '${REPO}/tnrfls/auth' && \
+  podman build -t stats:latest '${REPO}/tnrfls/stats' && \
+  podman build -t app:latest '${REPO}/tnrfls/app'
 "
 
 # --- create secret + move quadlet service file + make pod yaml discoverable by quadlet service ---
 sudo -iu "${USER}" bash -lc "
-  podman kube play '${SECRETS_FILE}'
-  mkdir -p ~/.config/containers/systemd
-  cp '${REPO}/infra/minicraftpod.kube' ~/.config/containers/systemd/minicraftpod.kube
-  cp '${REPO}/infra/pod.yml' ~/.config/containers/systemd/pod.yml
+  podman kube play '${SECRETS_FILE}' && \
+  mkdir -p ~/.config/containers/systemd && \
+  cp '${REPO}/infra/minicraftpod.kube' ~/.config/containers/systemd/minicraftpod.kube && \
+  < "${REPO}/infra/pod.yml" envsubst > ~/.config/containers/systemd/pod.yml
 "
+# cp '${REPO}/infra/pod.yml' ~/.config/containers/systemd/pod.yml
 
 # --- enable systemd therefore quadlet service ---
-sudo -iu "${USER}" bash -lc "
-  systemctl --user daemon-reload
+sudo -iu "${USER}" env XDG_RUNTIME_DIR=/run/user/11111 bash -lc "
+  systemctl --user daemon-reload && \
   systemctl --user start --now minicraftpod.service
 "

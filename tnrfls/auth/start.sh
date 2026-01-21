@@ -15,7 +15,7 @@ caddy run --config /auth/Caddyfile &
 # oauth2-proxy in background
 oauth2-proxy \
   --config=/auth/oauth2-proxy.cfg \
-  --redirect_url="$OAUTH2_PROXY_REDIRECT_URL" \
+  --redirect-url="$OAUTH2_PROXY_REDIRECT_URL" \
   --cookie-secret="$OAUTH2_PROXY_COOKIE_SECRET" \
   --client-id="$OAUTH2_PROXY_CLIENT_ID" \
   --client-secret-file=/secrets/manual_client_secret \

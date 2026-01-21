@@ -29,7 +29,7 @@ spec:
           value: "${FQDN}"
       volumeMounts:
         - name: auth
-          mountPath: /auth
+          mountPath: /auth/data
         - name: secretsvolume
           mountPath: /secrets
           readOnly: true
@@ -37,7 +37,7 @@ spec:
     - name: stats
       image: stats:latest
       env:
-        - name: PODMAN_HOST
+        - name: CONTAINER_HOST
           value: unix:///podman.sock
       volumeMounts:
         - name: share
