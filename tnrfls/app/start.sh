@@ -5,6 +5,7 @@ srcdir=$(dirname "$0")
 serverdir="/share/minicraftsrv"
 srvtype=$SRVTYPE
 source "${srcdir}/hlpr_get_minecraft.sh"
+source "${srcdir}/hlpr_get_mods.sh"
 
 mkdir -p "${serverdir}"
 cd "${serverdir}"
@@ -27,4 +28,21 @@ fi
 eula="${serverdir}/eula.txt"
 if [ -f "${eula}" ]; then sed -i 's/^eula=false$/eula=true/' "${eula}";
 else echo "eula=true" > "${eula}"; fi
+
+ferium profile create \
+-n tprofile \
+--game-version 1.21.8 \
+--mod-loader fabric \
+-o /share/minicraftsrv/mods/
+
+ferium scan
+
+ferium add \
+lithium \
+ferrite-core \
+fabric-api \
+viaversion \
+viafabric \
+inventory-essentials
+
 exec java -Xms1G -Xmx2G -jar server.jar nogui
