@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # -----------------
 # --- VARIABLES ---
@@ -10,6 +11,7 @@ SECRETS_FILE="${REPO}/infra/secrets.yml"
 USER="podadmin"
 
 source "$REPO"/ops/get_helpers.sh
+get_helpers
 
 # --------------
 # --- ACCESS ---
@@ -60,10 +62,11 @@ sudo -iu "${USER}" env XDG_RUNTIME_DIR=/run/user/11111 bash -lc 'systemctl --use
 
 # --- build images ---
 sudo -iu "${USER}" bash -lc "
-  podman build -t auth:latest '${REPO}/tnrfls/auth' && \
-  podman build -t stats:latest '${REPO}/tnrfls/stats' && \
-  podman build -t app:latest '${REPO}/tnrfls/app'
+  podman build -t auth:latest --build-arg DKFDIR='tnrfls/auth' -f '${REPO}/tnrfls/auth/Dockerfile' '${REPO}' && \
+  podman build -t stats:latest --build-arg DKFDIR='tnrfls/stats' -f '${REPO}/tnrfls/stats/Dockerfile' '${REPO}' && \
+  podman build -t app:latest --build-arg DKFDIR='tnrfls/app' -f '${REPO}/tnrfls/app/Dockerfile' '${REPO}'
 "
+# tag, inject arg, file to build, working directory context
 
 # --- create secret + move quadlet service file + make pod yaml discoverable by quadlet service ---
 echo "Debug: FQDN is set to [$FQDN]"

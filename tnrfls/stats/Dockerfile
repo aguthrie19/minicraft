@@ -1,4 +1,5 @@
 FROM alpine:3.19
+ARG DKFDIR=tnrfls/stats
 
 RUN apk add --no-cache \
     wget \    
@@ -20,9 +21,9 @@ RUN mkdir -p /stats/tfm && \
     wget -O /stats/tfm/tfm.php \
       https://raw.githubusercontent.com/prasathmani/tinyfilemanager/master/tinyfilemanager.php
 
-COPY fpm_tfm_pool.conf /stats/tfm/fpm_tfm_pool.conf
-COPY tfm_config.php /stats/tfm/config.php
-COPY start.sh /stats/start.sh
+COPY ${DKFDIR}/fpm_tfm_pool.conf /stats/tfm/fpm_tfm_pool.conf
+COPY ${DKFDIR}/tfm_config.php /stats/tfm/config.php
+COPY ${DKFDIR}/start.sh /stats/start.sh
 
 EXPOSE 9000/tcp
 EXPOSE 7681/tcp

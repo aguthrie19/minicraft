@@ -1,7 +1,7 @@
 # Stage 1: use a temporary container to install and verify the binary
 
 FROM alpine:3.19 AS installer
-
+ARG DKFDIR=tnrfls/auth
 ARG VERSION=v7.14.2
 ARG ARCH=linux-amd64
 ARG OAUTH2_PROXY_URL="https://github.com/oauth2-proxy/oauth2-proxy/releases/download/${VERSION}/oauth2-proxy-${VERSION}.${ARCH}.tar.gz"
@@ -20,7 +20,7 @@ RUN tar -xzf /tmp/oauth2-proxy.tar.gz --strip-components=1
 
 # Stage 2: make your real container and copy the binary from the temporary one
 FROM alpine:3.19
-
+ARG DKFDIR=tnrfls/auth
 ENV XDG_DATA_HOME=/auth/data
 
 RUN apk add --no-cache caddy
@@ -31,9 +31,9 @@ RUN chmod +x /usr/bin/oauth2-proxy
 
 RUN mkdir -p /auth && mkdir -p $XDG_DATA_HOME
 
-COPY Caddyfile /auth/Caddyfile
-COPY oauth2-proxy.cfg /auth/oauth2-proxy.cfg
-COPY start.sh /auth/start.sh
+COPY ${DKFDIR}/Caddyfile /auth/Caddyfile
+COPY ${DKFDIR}/oauth2-proxy.cfg /auth/oauth2-proxy.cfg
+COPY ${DKFDIR}/start.sh /auth/start.sh
 
 EXPOSE 8080/tcp
 EXPOSE 8443/tcp
