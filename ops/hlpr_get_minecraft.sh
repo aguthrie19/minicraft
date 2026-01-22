@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
 check_wantfailneed () {
-    local want need IFS w
-    want="curl  .  jq  .  java"
-    IFS='.'
-    for w in ${want}; do command -v "$w" >/dev/null 2>&1 || need="${need}${w} "; done
-    if [ -n "${need}" ]; then echo "MISSING ${need}" >&2; exit 1; fi
+    local w want need
+    want="curl jq java"
+
+    for w in ${want}; do command -v "$w" >/dev/null 2>&1 || need="${need:-}${w} "; done
+    if [ -n "${need:-}" ]; then echo "MISSING ${need}" >&2; exit 1; fi
 }
 check_wantfailneed
 
@@ -57,18 +57,3 @@ get_minecraft_fabric_jar_server_from_url () {
 #fab_game_v_q="1.21.8"
 #fab_load_v_q="0.18.4"
 #fab_istal_v_q="1.1.1"
-#
-#
-#outputfile=$(curl -fsSLOJ \
-#-w "%{filename_effective}" \
-#"https://meta.fabricmc.net/v2/versions/loader/${fab_game_v}/${fab_load_v}/${fab_istal_v}/server/jar")
-#echo "The file was saved as: $outputfile"
-#
-#
-#local w NEED=() WANT=(
-#    "curl"
-#    "jq"
-#    "java"
-#)
-#for w in "${WANT[@]}"; do command -v "$w" >/dev/null 2>&1 || NEED+=("$w"); done
-#[[ ${#NEED[@]} -gt 0 ]] && { echo "Missing: ${NEED[*]}" >&2; exit 1; }

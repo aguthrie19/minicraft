@@ -2,7 +2,7 @@
 set -eu
 
 srcdir=$(dirname "$0")
-serverdir="/share/minicraftserv"
+serverdir="/share/minicraftsrv"
 srvtype=$SRVTYPE
 source "${srcdir}/hlpr_get_minecraft.sh"
 
@@ -24,4 +24,7 @@ if [ ! -f server.jar ]; then
   esac
 fi
 
+eula="${serverdir}/eula.txt"
+if [ -f "${eula}" ]; then sed -i 's/^eula=false$/eula=true/' "${eula}";
+else echo "eula=true" > "${eula}"; fi
 exec java -Xms1G -Xmx2G -jar server.jar nogui
