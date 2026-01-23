@@ -1,0 +1,11 @@
+{
+  "profiles": [
+    {
+      "name": "minicraftprofile",
+      "output_dir": "/share/minicraftsrv/mods/",
+      "game_version": "1.21.8",
+      "mod_loader": "Fabric",
+      "mods": []
+    }
+  ]
+}
