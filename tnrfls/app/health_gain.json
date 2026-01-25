@@ -1,0 +1,20 @@
+{
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": [
+            "minecraft:beetroot_soup"
+          ],
+          "predicates": {
+            "minecraft:custom_data": "{unique_id:\"expand_health_2\"}"
+          }
+        }
+      }
+    }
+  },
+  "rewards": {
+    "function": "fractured_hearts:health_gain/validate"
+  }
+}
