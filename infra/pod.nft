@@ -21,8 +21,9 @@ table inet nat {
 table inet filter {
   chain pod_input {
     # all HTTP/HTTPS
-    tcp dport { 80, 443 } ct state new ct count over 10 counter drop
-    tcp dport { 80, 443 } meter rule_web { ip saddr limit rate 30/minute burst 60 packets } accept
+    tcp dport { 8080, 8443 } ct state new counter name "Qnew" continue
+    tcp dport { 8080, 8443 } ct count over 10 counter name "Qswarm10+" drop
+    tcp dport { 8080, 8443 } meter rule_web { ip saddr limit rate 20/minute burst 40 packets } counter name "Qfriend" accept
 
     # Minecraft TCP
     tcp dport { 25565 } accept
