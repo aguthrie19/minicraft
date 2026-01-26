@@ -30,7 +30,7 @@ spec:
       volumeMounts:
         - name: auth
           mountPath: /auth/data
-        - name: secretsvolume
+        - name: secretsvolume_auth
           mountPath: /secrets
           readOnly: true
 
@@ -42,6 +42,9 @@ spec:
       volumeMounts:
         - name: share
           mountPath: /share
+        - name: secretsvolume_sensitive
+          mountPath: /secrets
+          readOnly: true
         - name: podsock
           mountPath: /podman.sock
 
@@ -59,6 +62,9 @@ spec:
       volumeMounts:
         - name: share
           mountPath: /share
+        - name: secretsvolume_sensitive
+          mountPath: /secrets
+          readOnly: true
 
   volumes:
 
@@ -77,11 +83,18 @@ spec:
         path: /run/user/11111/podman/podman.sock
         type: Socket
 
-    - name: secretsvolume
+    - name: secretsvolume_auth
       secret:
-        secretName: authsecrets
+        secretName: secretsauth
         items:
         - key: manual_client_id
           path: manual_client_id
         - key: manual_client_secret
           path: manual_client_secret
+
+    - name: secretsvolume_sensitive
+      secret:
+        secretName: secretssensitive
+        items:
+        - key: manual_rcon_password
+          path: manual_rcon_password

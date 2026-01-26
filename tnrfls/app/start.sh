@@ -43,7 +43,12 @@ eula="${serverdir}/eula.txt"
 if [ -f "${eula}" ]; then sed -i 's/^eula=false$/eula=true/' "${eula}";
 else echo "eula=true" > "${eula}"; fi
 
-get_mods_cp_check ${serverpps_from} ${serverpps_to}
+(
+  get_mods_cp_check ${serverpps_from} ${serverpps_to}
+  rcon_password="$(cat /secrets/manual_rcon_password)" envsubst \
+  < "${serverdir}/server.properties" > "${serverdir}/server.properties.tmp"
+  mv "${serverdir}/server.properties.tmp" "${serverdir}/server.properties"
+)
 
 if [ ! -f "${feriumconfig}" ]; then
   cp "${feriumconfig}" "${serverdir}/ferium_profile.json" || { echo "Error: Failed to find and move config file."; exit 1; }

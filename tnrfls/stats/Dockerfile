@@ -1,5 +1,6 @@
 FROM alpine:3.19
 ARG DKFDIR=tnrfls/stats
+ENV SRVDIR=/share/minicraftsrv/
 
 RUN apk add --no-cache \
     wget \    
@@ -24,6 +25,7 @@ RUN mkdir -p /stats/tfm && \
 COPY ${DKFDIR}/fpm_tfm_pool.conf /stats/tfm/fpm_tfm_pool.conf
 COPY ${DKFDIR}/tfm_config.php /stats/tfm/config.php
 COPY ${DKFDIR}/start.sh /stats/start.sh
+COPY ${DKFDIR}/whiteref/ /stats/whiteref/
 
 EXPOSE 9000/tcp
 EXPOSE 7681/tcp

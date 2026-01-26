@@ -74,7 +74,7 @@ sudo -iu "${USER}" bash -lc "
   podman kube play '${SECRETS_FILE}' && \
   mkdir -p ~/.config/containers/systemd && \
   cp '${REPO}/infra/minicraftpod.kube' ~/.config/containers/systemd/minicraftpod.kube && \
-  FQDN='${FQDN}' < '${REPO}/infra/pod.yml' envsubst > ~/.config/containers/systemd/pod.yml
+  FQDN='${FQDN}' envsubst < '${REPO}/infra/pod.yml' > ~/.config/containers/systemd/pod.yml
 "
 # cp '${REPO}/infra/pod.yml' ~/.config/containers/systemd/pod.yml
 

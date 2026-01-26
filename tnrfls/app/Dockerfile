@@ -1,8 +1,10 @@
 FROM alpine:3.19
 ARG DKFDIR=tnrfls/app
+ENV SRVTYPE="fabric"
+
 WORKDIR /app
 
-RUN apk add --no-cache openjdk21-jre-headless rcon ca-certificates curl jq zip
+RUN apk add --no-cache openjdk21-jre-headless rcon ca-certificates curl jq zip gettext
 RUN wget -O ferium-linux-nogui.zip https://github.com/gorilla-devs/ferium/releases/download/v4.7.1/ferium-linux-nogui.zip \
     && unzip ferium-linux-nogui.zip -d /bin/
 
@@ -25,5 +27,4 @@ COPY --chmod=750 ${DKFDIR}/start.sh /app/start.sh
 EXPOSE 25565/tcp
 EXPOSE 24454/udp
 
-ENV SRVTYPE="fabric"
 ENTRYPOINT [ "/app/start.sh" ]
