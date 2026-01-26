@@ -1,13 +1,22 @@
 #!/usr/bin/env sh
+echo "o container entrypoint"
 set -eu
 
 #workdir should be /app of the container
 srcdir=$(dirname "$0")
 serverdir="/share/minicraftsrv"
-modsdir="/share/minicraftsrv/mods"
+serverpps_from="${srcdir}/server.properties"
+serverpps_to="${serverdir}/server.properties"
+modsdir="{serverdir}/mods"
+configdir="{serverdir}/config"
 srvtype=$SRVTYPE
 serverjar="server.jar"
 feriumconfig="${srcdir}/ferium_profile.json"
+ferriteconf_from="${srcdir}/ferritecore.mixin.properties"
+ferriteconf_to="${serverdir}/config/ferritecore.mixin.properties"
+lithiumpps_from="${srcdir}/lithium.properties"
+lithiumpps_to="${serverdir}/config/lithium.properties"
+javaflags="${srcdir}/jvm_flags.txt"
 source "${srcdir}/hlpr_get_minecraft.sh"
 source "${srcdir}/hlpr_get_mods.sh"
 
@@ -34,47 +43,27 @@ eula="${serverdir}/eula.txt"
 if [ -f "${eula}" ]; then sed -i 's/^eula=false$/eula=true/' "${eula}";
 else echo "eula=true" > "${eula}"; fi
 
-if [ -f "${feriumconfig}" ]; then
-  export FERIUM_CONFIG_FILE="${feriumconfig}";
-  cp "${feriumconfig}" "${serverdir}/ferium_profile.json" || { echo "Error: Failed to move config file."; exit 1; }
+get_mods_cp_check ${serverpps_from} ${serverpps_to}
+
+if [ ! -f "${feriumconfig}" ]; then
+  cp "${feriumconfig}" "${serverdir}/ferium_profile.json" || { echo "Error: Failed to find and move config file."; exit 1; }
 else
-  echo "ERROR: No ferium config"
-  return 1
+  export FERIUM_CONFIG_FILE="${feriumconfig}";
 fi
 
-#else
-#  ferium profile create \
-#  -n tprofile \
-#  --game-version 1.21.8 \
-#  --mod-loader fabric \
-#  -o /share/minicraftsrv/mods/
-#
-#  ferium add \
-#  lithium \
-#  ferrite-core \
-#  fabric-api \
-#  viaversion \
-#  viafabric \
-#  no-f3 \
-#  sleep-warp-updated \
-#  conures-graves \
-#  "stamina!" \
-#  lights-out-ftf
-#fi
-
-
-
-
-
 ferium scan
-#ferium add "stamina!"
+#ferium add maybe stamina_exclamation
 ferium upgrade
+
 echo "###### passed ferium upgrade ######"
-get_mods_patch_stamina_jar
+get_mods_cp_check ${ferriteconf_from} ${ferriteconf_to}
+echo "###### passed ferrrite settings ######"
+get_mods_cp_check ${lithiumpps_from} ${lithiumpps_to}
+#get_mods_patch_stamina_jar
 echo "###### passed stamina jar patch ######"
 get_mods_patch_fracturedhearts
 echo "###### passed fractured hearts patch ######"
 get_mods_boat_craft
 echo "###### passed boat craft install ######"
 
-exec java -Xms1G -Xmx2G -jar server.jar nogui
+exec java @$javaflags -jar server.jar --nogui

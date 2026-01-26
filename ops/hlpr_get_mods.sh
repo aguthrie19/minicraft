@@ -5,21 +5,35 @@ check_wantfailneed () {
     want="ferium unzip zip grep realpath"
 
     for w in ${want}; do command -v "$w" >/dev/null 2>&1 || need="${need:-}${w} "; done
-    if [ -n "${need:-}" ]; then echo "MISSING ${need}" >&2; exit 1; fi
+    if [ -n "${need:-}" ]; then echo "[X] missing ${need}" >&2; exit 1; fi
 }
 check_wantfailneed
 
+get_mods_cp_check() {
+  local infile outfile
+  infile="${1:?WANTARG input file path}"
+  outfile="${2:?WANTARG output file path}"
+  if [ -f "${outfile}" ]; then echo "o replacing ${outfile}"
+  else echo "o adding ${outfile}"; fi
+  cp "${infile}" "${outfile}" || { echo "[X] can't cp ${infile} -X> ${outfile}"; return 1; }
+}
 
 get_mods_patch_stamina_jar() {
-  jar_file='mods/stamina!-1.0.3.jar'
+  #working dir should be /share/minicraftsrv/
+  #patch files live in /app
+  jar_file='mods/stamina_exclaimation-1.0.3.jar'
 
-  jar_abs_path="$(realpath "$jar_file")"
+  jar_abs_path="$(realpath '$jar_file')"
   #jar_abs_path="$(pwd)/$jar_file"
   target_file="data/stamina/function/stamina_tick.mcfunction"
   search_pattern="run title"
 
+  ls -F "mods/" | grep "stamina"
+  ls -l "HEREs the jar_file $jar_file"
   unzip -l "$jar_file" | grep "$target_file" -q || { echo "Error unzip check: probably named target file incorrectly"; rm -rf "$tmpdir"; return 1; }
-
+  
+  echo "#####patch stamina jar passed unzip"
+  
   tmpdir=$(mktemp -d)
   unzip "$jar_file" "$target_file" -d "$tmpdir" || { echo "Error unzip"; rm -rf "$tmpdir"; return 1; }
   #mkdir -p "${tmpdir}/$(dirname "${target_file}" )"
@@ -30,6 +44,8 @@ get_mods_patch_stamina_jar() {
     return 1
   fi
 
+  echo "#####patch stamina jar before grep"
+
   if grep -q "^#.*$search_pattern" "$tmpdir/$target_file"; then
     echo "Line matching '$search_pattern' is already commented out."
   elif grep -q "$search_pattern" "$tmpdir/$target_file"; then
@@ -38,6 +54,7 @@ get_mods_patch_stamina_jar() {
     sed -i "/$search_pattern/s/^/#/" "$tmpdir/$target_file"
 
     # Update the JAR
+    echo "#####patch stamina jar Update the JAR"
     (cd "$tmpdir" && zip -u "$jar_abs_path" "$target_file") || { rm -rf "$tmpdir"; return 1; }
     echo "Successfully updated $jar_file."
   else

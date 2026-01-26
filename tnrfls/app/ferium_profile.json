@@ -19,6 +19,18 @@
           }
         },
         {
+          "name": "Krypton",
+          "identifier": {
+            "ModrinthProject": "fQEb0iXm"
+          }
+        },
+        {
+          "name": "Ksyxis",
+          "identifier": {
+            "ModrinthProject": "2ecVyZ49"
+          }
+        },
+        {
           "name": "Lights Out",
           "identifier": {
             "ModrinthProject": "Xp6dkIqO"
@@ -31,21 +43,27 @@
           }
         },
         {
+          "name": "Moonrise",
+          "identifier": {
+            "ModrinthProject": "KOHu7RCS"
+          }
+        },
+        {
           "name": "no f3",
           "identifier": {
             "ModrinthProject": "MPFUV2Ds"
           }
         },
         {
-          "name": "SleepWarp (Updated)",
+          "name": "NoisiumForked",
           "identifier": {
-            "ModrinthProject": "DlSXkZVT"
+            "ModrinthProject": "hasdd01q"
           }
         },
         {
-          "name": "Stamina!",
+          "name": "SleepWarp (Updated)",
           "identifier": {
-            "ModrinthProject": "raVRo3Ef"
+            "ModrinthProject": "DlSXkZVT"
           }
         },
         {
