@@ -1,0 +1,44 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_phantom_membrane": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": ["minecraft:phantom_membrane"] }] }
+    },
+    "has_glow_ink_sac": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": ["minecraft:glow_ink_sac"] }] }
+    },
+    "has_beetroot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": ["minecraft:beetroot"] }] }
+    },
+    "has_gold_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": ["minecraft:gold_block"] }] }
+    },
+    "has_bowl": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [{ "items": ["minecraft:bowl"] }] }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "fractured_hearts:hearty_soup" }
+    }
+  },
+  "requirements": [
+    [
+      "has_phantom_membrane",
+      "has_glow_ink_sac",
+      "has_beetroot",
+      "has_gold_block",
+      "has_bowl",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "fractured_hearts:hearty_soup"
+    ]
+  }
+}

@@ -7,6 +7,12 @@
       "mod_loader": "Fabric",
       "mods": [
         {
+          "name": "c2me-fabric",
+          "identifier": {
+            "ModrinthProject": "VSNURh3q"
+          }
+        },
+        {
           "name": "Fabric API",
           "identifier": {
             "ModrinthProject": "P7dR8mSH"
@@ -43,12 +49,6 @@
           }
         },
         {
-          "name": "Moonrise",
-          "identifier": {
-            "ModrinthProject": "KOHu7RCS"
-          }
-        },
-        {
           "name": "no f3",
           "identifier": {
             "ModrinthProject": "MPFUV2Ds"
@@ -64,6 +64,12 @@
           "name": "SleepWarp (Updated)",
           "identifier": {
             "ModrinthProject": "DlSXkZVT"
+          }
+        },
+        {
+          "name": "Spark",
+          "identifier": {
+            "ModrinthProject": "l6YH9Als"
           }
         },
         {

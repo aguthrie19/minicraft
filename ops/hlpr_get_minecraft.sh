@@ -32,7 +32,7 @@ get_minecraft_fabric_jar_server_from_url () {
     fab_istal_v_q="${3:?WANTARG fabric server installer version}"
     outputfile="${4:?WANTARG outputfile}"
 
-    echo "get_minecraft_fabric_jar_server_from_url"
+    echo "running get_minecraft_fabric_jar_server_from_url"
 
     tmpdir=$(mktemp -d)
     trap 'rm -rf "$tmpdir"' EXIT INT TERM

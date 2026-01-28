@@ -5,23 +5,28 @@ set -eu
 #workdir should be /app of the container
 srcdir=$(dirname "$0")
 serverdir="/share/minicraftsrv"
+modsdir="${serverdir}/mods"
+configdir="${serverdir}/config"
+
 serverpps_from="${srcdir}/server.properties"
 serverpps_to="${serverdir}/server.properties"
-modsdir="{serverdir}/mods"
-configdir="{serverdir}/config"
+serverops_from="${srcdir}/ops.json"
+serverops_to="${serverdir}/ops.json"
 srvtype=$SRVTYPE
 serverjar="server.jar"
-feriumconfig="${srcdir}/ferium_profile.json"
+
+feriumconf_from="${srcdir}/ferium_profile.json"
+feriumconf_to="${serverdir}/ferium_profile.json"
 ferriteconf_from="${srcdir}/ferritecore.mixin.properties"
 ferriteconf_to="${serverdir}/config/ferritecore.mixin.properties"
 lithiumpps_from="${srcdir}/lithium.properties"
 lithiumpps_to="${serverdir}/config/lithium.properties"
 javaflags="${srcdir}/jvm_flags.txt"
+
 source "${srcdir}/hlpr_get_minecraft.sh"
 source "${srcdir}/hlpr_get_mods.sh"
 
-mkdir -p "${serverdir}"
-mkdir -p "${modsdir}"
+mkdir -p "${serverdir}" "${modsdir}" "${configdir}"
 cd "${serverdir}"
 
 if [ ! -f "${serverjar}" ]; then
@@ -50,12 +55,14 @@ else echo "eula=true" > "${eula}"; fi
   mv "${serverdir}/server.properties.tmp" "${serverdir}/server.properties"
 )
 
-if [ ! -f "${feriumconfig}" ]; then
-  cp "${feriumconfig}" "${serverdir}/ferium_profile.json" || { echo "Error: Failed to find and move config file."; exit 1; }
-else
-  export FERIUM_CONFIG_FILE="${feriumconfig}";
-fi
+get_mods_cp_check ${serverops_from} ${serverops_to}
 
+#if [ ! -f "${feriumconf_to}" ]; then
+#  cp "${feriumconf_from}" "${feriumconf_to}" || { echo "Error: Failed to find and move config file."; exit 1; }
+#fi
+
+get_mods_cp_check ${feriumconf_from} ${feriumconf_to}
+export FERIUM_CONFIG_FILE="${feriumconf_to}"
 ferium scan
 #ferium add maybe stamina_exclamation
 ferium upgrade
@@ -66,7 +73,8 @@ echo "###### passed ferrrite settings ######"
 get_mods_cp_check ${lithiumpps_from} ${lithiumpps_to}
 #get_mods_patch_stamina_jar
 echo "###### passed stamina jar patch ######"
-get_mods_patch_fracturedhearts
+#get_mods_patch_fracturedhearts
+get_mods_fracturedhearts
 echo "###### passed fractured hearts patch ######"
 get_mods_boat_craft
 echo "###### passed boat craft install ######"

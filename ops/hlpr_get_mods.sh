@@ -13,9 +13,10 @@ get_mods_cp_check() {
   local infile outfile
   infile="${1:?WANTARG input file path}"
   outfile="${2:?WANTARG output file path}"
-  if [ -f "${outfile}" ]; then echo "o replacing ${outfile}"
-  else echo "o adding ${outfile}"; fi
-  cp "${infile}" "${outfile}" || { echo "[X] can't cp ${infile} -X> ${outfile}"; return 1; }
+  if [ ! -f "${outfile}" ]; then
+    echo "o adding ${outfile}"
+    cp "${infile}" "${outfile}" || { echo "[X] can't cp ${infile} -X> ${outfile}"; return 1; }
+  else echo "o ${outfile} prexists"; fi
 }
 
 get_mods_patch_stamina_jar() {
@@ -109,7 +110,7 @@ get_mods_patch_fracturedhearts() {
       # 4. Create directory structure for the patch inside tmpdir
       mkdir -p "$tmpdir/$(dirname "$add_recipe")"
       mkdir -p "$tmpdir/$(dirname "$add_advancement")"
-      mkdir -p "$tmpdir/$(dirname "$rm_defaults")"
+      mkdir -p "$tmpdir/$(dirname "$add_defaults")"
 
       # 5. Copy local source files to temp structure
       # Searches current dir first, then /app/
@@ -169,7 +170,25 @@ get_mods_boat_craft () {
     echo "Info: datapack $is_installed_file is already installed."
     return 0
   else
-    echo "Info: installing datapack $zip_file."
+    echo "Info: installing datapack $zip_name"
+    cp "$want_install_file" "$is_installed_file" || return 1
+  fi
+}
+
+get_mods_fracturedhearts () {
+  #working dir should be /share/minicraftsrv/
+  #patch files live in /app
+  zip_name="FracturedHearts_v1_0.zip"
+  is_installed_file="world/datapacks/$zip_name"
+  want_install_file="/app/$zip_name"
+
+  # 1. Pre-check: If zip exists
+  mkdir -p "$(dirname "$is_installed_file")"
+  if [ -f "$is_installed_file" ]; then
+    echo "Info: datapack $is_installed_file is already installed."
+    return 0
+  else
+    echo "Info: installing datapack $zip_name"
     cp "$want_install_file" "$is_installed_file" || return 1
   fi
 }
