@@ -16,7 +16,7 @@
 
     @match_oauth2 path /oauth2/*
     @match_services2protect path /files* /stats*
-    @match_servicesUNprotect path /friends
+    @match_servicesUNprotect path /friends /staticfilestaticfile
     @match_allelse
 
     handle @match_oauth2 {
@@ -48,9 +48,16 @@
     }
 
     handle @match_servicesUNprotect {
-        request_body max_size 1KB
-        rewrite * /stats/whiteref/whiteref.php
-        php_fastcgi stats:9000
+        handle /friends {
+            request_body max_size 1KB
+            rewrite * /stats/whiteref/whiteref.php
+            php_fastcgi stats:9000
+        }
+        handle /staticfilestaticfile {
+            request_body max_size 1KB
+            rewrite * /stats/staticfile.php
+            php_fastcgi stats:9000
+        }
     }
 
     handle @match_allelse {

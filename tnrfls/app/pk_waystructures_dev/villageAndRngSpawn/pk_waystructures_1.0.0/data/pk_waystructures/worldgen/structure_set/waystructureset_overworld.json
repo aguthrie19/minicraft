@@ -1,0 +1,20 @@
+{
+  "structures": [
+    {
+      "structure": "pk_waystructures:waystructure_overworld",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 41,
+    "separation": 19,
+    "salt": 819291,
+    "spread_type": "triangular",
+    "frequency": 1,
+    "exclusion_zone": {
+      "other_set": "minecraft:villages",
+      "chunk_count": 16
+    }
+  }
+}

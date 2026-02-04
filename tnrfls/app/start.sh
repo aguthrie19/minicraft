@@ -78,5 +78,7 @@ get_mods_fracturedhearts
 echo "###### passed fractured hearts patch ######"
 get_mods_boat_craft
 echo "###### passed boat craft install ######"
+get_mods_waystructures
+echo "###### passed waystructures install ######"
 
 exec java @$javaflags -jar server.jar --nogui

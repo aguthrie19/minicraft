@@ -9,6 +9,9 @@
  * @copyright 2013-2017 Chris Churchwell
  * @author thedudeguy
  * @link https://github.com/thedudeguy/PHP-Minecraft-Rcon
+ *
+ * @forked and improved 2025 by jonassilveira
+ * https://github.com/jonassilveira/PHP-Minecraft-Rcon
  */
 
 namespace Thedudeguy;

@@ -30,13 +30,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $whitelistfile
             );
             $updatedreferrals = updateReferrals($referral, $referralsfile);
-            exit(join('<br>', $updatedreferrals));
+            exit(showInHtmlBody(joinInHtmlDivs([
+                "You're whitelisted!",
+                "Share this NEW referral...",
+                join('<br>',$updatedreferrals)
+            ])));
         }
     }
 }
+
+print showInHtmlBody(aHtmlForm());
+
+function showInHtmlBody($content = "") {
+    return <<<HTML
+    <body style="display:grid; place-content:center; min-height:100vh; text-align:center; gap:10px;">
+        $content
+    </body>
+    HTML;
+}
+
+function aHtmlForm() {
+    return <<<HTML
+    <form method="POST" style="display:flex;flex-direction:column;gap:10px;">
+        <input name="referral" placeholder="Referral" required>
+        <input name="profilename" placeholder="Profilename" required>
+        <button>Submit</button>
+    </form>
+    HTML;
+}
+
+function joinInHtmlDivs(array $elements) {
+    return $row = "<div>" . join("</div><div>",$elements) . "</div>";
+}
 ?>
-<form method="POST" style="display:flex;flex-direction:column;align-items:center;gap:10px;justify-content:center;height:100vh">
-    <input name="referral" placeholder="Referral" required>
-    <input name="profilename" placeholder="Profilename" required>
-    <button>Submit</button>
-</form>

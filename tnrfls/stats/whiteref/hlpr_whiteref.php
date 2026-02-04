@@ -27,7 +27,11 @@ function whiteListAdd(
     string $whitelistfile = ''
 ) {
     if ($rcon->connect()) {
-        $rcon->sendCommand("whitelist add $profilename");
+        $response1 = $rcon->sendCommand("whitelist add $profilename");
+        error_log($response1 ? "o rcon whitelist add " . $response1 : "[X] rcon whitelist cant add whitelistadd empty respons");
+        #usleep(500000);
+        $response2 = $rcon->sendCommand("whitelist reload");
+        error_log($response2 ? "o rcon whitelist reload " . $response2 : "[X] rcon cant reload whitelist");
         $rcon->disconnect();
         return;
     }

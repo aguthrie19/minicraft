@@ -1,0 +1,16 @@
+{
+  "structures": [
+    {
+      "structure": "pk_waystructures:waystructure_nether",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 31,
+    "separation": 10,
+    "salt": 71399,
+    "spread_type": "triangular",
+    "frequency": 1
+  }
+}

@@ -167,10 +167,10 @@ get_mods_boat_craft () {
   # 1. Pre-check: If zip exists
   mkdir -p "$(dirname "$is_installed_file")"
   if [ -f "$is_installed_file" ]; then
-    echo "Info: datapack $is_installed_file is already installed."
+    echo "o datapack $is_installed_file is already installed."
     return 0
   else
-    echo "Info: installing datapack $zip_name"
+    echo "o installing datapack $zip_name"
     cp "$want_install_file" "$is_installed_file" || return 1
   fi
 }
@@ -185,10 +185,39 @@ get_mods_fracturedhearts () {
   # 1. Pre-check: If zip exists
   mkdir -p "$(dirname "$is_installed_file")"
   if [ -f "$is_installed_file" ]; then
-    echo "Info: datapack $is_installed_file is already installed."
+    echo "o datapack $is_installed_file is already installed."
     return 0
   else
-    echo "Info: installing datapack $zip_name"
+    echo "o installing datapack $zip_name"
     cp "$want_install_file" "$is_installed_file" || return 1
   fi
+}
+
+get_mods_waystructures () {
+  #working dir should be /share/minicraftsrv/
+  #files live in /app/pk_waystructures
+  zip1_name="pk_waystones_V.3.4.9_mc_1.21.5.zip"
+  zip2_name="pk_waystructures_1.0.0.zip"
+  is_installed_file1="world/datapacks/$zip1_name"
+  want_install_file1="/app/pk_waystructures/$zip1_name"
+  is_installed_file2="world/datapacks/$zip2_name"
+  want_install_file2="/app/pk_waystructures/$zip2_name"
+
+  # 1. Pre-check: If zip exists
+  mkdir -p "$(dirname "$is_installed_file1")"
+  if [ -f "$is_installed_file1" ]; then
+    echo "o datapack $is_installed_file1 is already installed."
+  else
+    echo "o installing datapack $zip1_name"
+    cp "$want_install_file1" "$is_installed_file1" || return 1
+  fi
+  # 1. Pre-check: If zip exists
+  mkdir -p "$(dirname "$is_installed_file2")"
+  if [ -f "$is_installed_file2" ]; then
+    echo "o datapack $is_installed_file2 is already installed."
+  else
+    echo "o installing datapack $zip2_name"
+    cp "$want_install_file2" "$is_installed_file2" || return 1
+  fi
+  return 0
 }

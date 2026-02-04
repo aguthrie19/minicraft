@@ -19,17 +19,50 @@ table inet nat {
 }
 
 table inet filter {
+
+  counter amtWebNew {}
+  counter amtWebOver10 {}
+  counter amtWebFriend {}
+  counter amtMcraftNew {}
+  counter amtMcraftFriend {}
+
+  set aSetWeb {
+    type ipv4_addr
+    flags dynamic, timeout
+    timeout 25h
+    size 16384
+  }
+
+  set aSetMcraftFriend {
+    type ipv4_addr
+    flags dynamic, timeout
+    timeout 48h
+    size 16384
+  }
+
+  set aSetUdp {
+    type ipv4_addr
+    flags dynamic, timeout
+    timeout 30m
+    size 16384
+  }
+
   chain pod_input {
     # all HTTP/HTTPS
-    tcp dport { 8080, 8443 } ct state new counter name "Qnew" continue
-    tcp dport { 8080, 8443 } ct count over 10 counter name "Qswarm10+" drop
-    tcp dport { 8080, 8443 } meter rule_web { ip saddr limit rate 20/minute burst 40 packets } counter name "Qfriend" accept
+    tcp dport { 8080, 8443 } ct state new counter name amtWebNew continue
+    tcp dport { 8080, 8443 } ct count over 10 counter name amtWebOver10 drop
+    tcp dport { 8080, 8443 } add @aSetWeb { ip saddr limit rate 20/minute burst 40 packets } counter name amtWebFriend accept
 
     # Minecraft TCP
-    tcp dport { 25565 } accept
+    tcp dport { 25565 } ct state new counter name amtMcraftNew continue
+    tcp dport { 25565 } ip saddr @aSetMcraftFriend accept
+    tcp dport { 25565 } numgen inc mod 4 != 0 drop
+    #tcp dport { 25565 } meter aSetMcraftFriend { limit rate 1/minute burst 15 packets } counter name amtMcraftFriend continue
+    tcp dport { 25565 } update @aSetMcraftFriend { ip saddr } accept
+    #tcp dport { 25565 } accept
 
     # limit UDP traffic
-    udp dport 24454 meter rule_udp { ip saddr limit rate 50/second burst 200 packets } accept
+    udp dport 24454 update @aSetUdp { ip saddr limit rate 50/second burst 200 packets } accept
     udp dport 24454 drop
   }
 }

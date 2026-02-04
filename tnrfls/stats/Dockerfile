@@ -23,8 +23,10 @@ RUN mkdir -p /stats/tfm && \
       https://raw.githubusercontent.com/prasathmani/tinyfilemanager/master/tinyfilemanager.php
 
 COPY ${DKFDIR}/fpm_tfm_pool.conf /stats/tfm/fpm_tfm_pool.conf
+COPY ${DKFDIR}/php_memory.ini /stats/tfm/php_memory.ini
 COPY ${DKFDIR}/tfm_config.php /stats/tfm/config.php
 COPY ${DKFDIR}/start.sh /stats/start.sh
+COPY ${DKFDIR}/staticfile.php /stats/staticfile.php
 COPY ${DKFDIR}/whiteref/ /stats/whiteref/
 
 EXPOSE 9000/tcp

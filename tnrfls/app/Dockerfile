@@ -16,6 +16,7 @@ COPY --chmod=770 ${DKFDIR}/ferium_profile.json /app/ferium_profile.json
 COPY --chmod=640 ${DKFDIR}/ferritecore.mixin.properties /app/ferritecore.mixin.properties
 COPY --chmod=640 ${DKFDIR}/lithium.properties /app/lithium.properties
 COPY --chmod=750 ${DKFDIR}/FracturedHearts_v1_0.zip /app/FracturedHearts_v1_0.zip
+COPY --chmod=750 ${DKFDIR}/pk_waystructures /app/pk_waystructures
 # COPY --chmod=750 ${DKFDIR}/beetroot_soup.json /app/beetroot_soup.json
 # COPY --chmod=750 ${DKFDIR}/health_gain.json /app/health_gain.json
 # COPY --chmod=750 ${DKFDIR}/fracturedhearts_default_settings.mcfunction /app/default_settings.mcfunction
